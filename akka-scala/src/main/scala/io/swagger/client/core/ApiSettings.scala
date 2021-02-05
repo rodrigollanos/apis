@@ -1,6 +1,6 @@
 /**
- * Account  Process
- * Account Process
+ * Account  Debit Management
+ * This API allows to manage schedule DD facilities on an account Additionally it also allows to request the portability of DD Facilities from one account to another. Features: Consult Recurring Schedules, Include Recurring Schedules, Approve or Change Recurring Schedules, Delete Recurring Schedules, Detail Recurring Schedules, Consult History Recurring Schedules, Consult Titles Declined in Recurring Schedules, Detail Title Declined in Recurring Schedules.
  *
  * OpenAPI spec version: 1.0.0
  * Contact: nombre.apellidos@gruposantander.com

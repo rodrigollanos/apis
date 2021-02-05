@@ -1,6 +1,6 @@
 /**
- * Account  Process
- * Account Process
+ * Account  Debit Management
+ * This API allows to manage schedule DD facilities on an account Additionally it also allows to request the portability of DD Facilities from one account to another. Features: Consult Recurring Schedules, Include Recurring Schedules, Approve or Change Recurring Schedules, Delete Recurring Schedules, Detail Recurring Schedules, Consult History Recurring Schedules, Consult Titles Declined in Recurring Schedules, Detail Title Declined in Recurring Schedules.
  *
  * OpenAPI spec version: 1.0.0
  * Contact: nombre.apellidos@gruposantander.com
@@ -11,7 +11,6 @@
  */
 package io.swagger.client.api
 
-import io.swagger.client.model.Error
 import io.swagger.client.model.Errors
 import io.swagger.client.core._
 import io.swagger.client.core.CollectionFormats._
@@ -20,7 +19,7 @@ import io.swagger.client.core.ApiKeyLocations._
 object DefaultApi {
 
   /**
-   * Read account information: Basic Data, Identifiers. Current Balance Last Statements and last Transactions (last two months)
+   * Remove a schedule DD Facility
    * 
    * Expected answers:
    *   code 400 : Errors (Bad Request)
@@ -34,10 +33,12 @@ object DefaultApi {
    * @param xSantanderClientId Client ID header
    * @param authorization Authorization security header
    * @param accountId 
+   * @param scheduleDirectDebitId 
    */
-  def accountIdGet(xSantanderClientId: String, authorization: String, accountId: String): ApiRequest[Unit] =
-    ApiRequest[Unit](ApiMethods.GET, "https://localhost/accounts", "/{account_id}", "application/json")
+  def accountIdScheduleDirectDebitScheduleDirectDebitIdDelete(xSantanderClientId: String, authorization: String, accountId: String, scheduleDirectDebitId: String): ApiRequest[Unit] =
+    ApiRequest[Unit](ApiMethods.DELETE, "https://localhost/accounts", "/{account_id}/schedule_direct_debit/{schedule_direct_debit_id}", "application/json")
       .withPathParam("account_id", accountId)
+      .withPathParam("schedule_direct_debit_id", scheduleDirectDebitId)
       .withHeaderParam("X-Santander-Client-Id", xSantanderClientId)
       .withHeaderParam("Authorization", authorization)
       .withErrorResponse[Errors](400)
@@ -48,7 +49,7 @@ object DefaultApi {
       .withErrorResponse[Errors](503)
       .withErrorResponse[Errors](504)
         /**
-   *  Retrieve  list of limits of one account
+   * Get schedule DD Facility details
    * 
    * Expected answers:
    *   code 400 : Errors (Bad Request)
@@ -62,10 +63,12 @@ object DefaultApi {
    * @param xSantanderClientId Client ID header
    * @param authorization Authorization security header
    * @param accountId 
+   * @param scheduleDirectDebitId 
    */
-  def accountIdLimitsGet(xSantanderClientId: String, authorization: String, accountId: String): ApiRequest[Unit] =
-    ApiRequest[Unit](ApiMethods.GET, "https://localhost/accounts", "/{account_id}/limits", "application/json")
+  def accountIdScheduleDirectDebitScheduleDirectDebitIdGet(xSantanderClientId: String, authorization: String, accountId: String, scheduleDirectDebitId: String): ApiRequest[Unit] =
+    ApiRequest[Unit](ApiMethods.GET, "https://localhost/accounts", "/{account_id}/schedule_direct_debit/{schedule_direct_debit_id}", "application/json")
       .withPathParam("account_id", accountId)
+      .withPathParam("schedule_direct_debit_id", scheduleDirectDebitId)
       .withHeaderParam("X-Santander-Client-Id", xSantanderClientId)
       .withHeaderParam("Authorization", authorization)
       .withErrorResponse[Errors](400)
@@ -76,7 +79,7 @@ object DefaultApi {
       .withErrorResponse[Errors](503)
       .withErrorResponse[Errors](504)
         /**
-   * Cancel one limit
+   * Modify schedule DD Facility (effective date)
    * 
    * Expected answers:
    *   code 400 : Errors (Bad Request)
@@ -90,12 +93,12 @@ object DefaultApi {
    * @param xSantanderClientId Client ID header
    * @param authorization Authorization security header
    * @param accountId 
-   * @param limitId 
+   * @param scheduleDirectDebitId 
    */
-  def accountIdLimitsLimitIdDelete(xSantanderClientId: String, authorization: String, accountId: String, limitId: String): ApiRequest[Unit] =
-    ApiRequest[Unit](ApiMethods.DELETE, "https://localhost/accounts", "/{account_id}/limits/{limit_id}", "application/json")
+  def accountIdScheduleDirectDebitScheduleDirectDebitIdPatch(xSantanderClientId: String, authorization: String, accountId: String, scheduleDirectDebitId: String): ApiRequest[Unit] =
+    ApiRequest[Unit](ApiMethods.PATCH, "https://localhost/accounts", "/{account_id}/schedule_direct_debit/{schedule_direct_debit_id}", "application/json")
       .withPathParam("account_id", accountId)
-      .withPathParam("limit_id", limitId)
+      .withPathParam("schedule_direct_debit_id", scheduleDirectDebitId)
       .withHeaderParam("X-Santander-Client-Id", xSantanderClientId)
       .withHeaderParam("Authorization", authorization)
       .withErrorResponse[Errors](400)
@@ -106,7 +109,7 @@ object DefaultApi {
       .withErrorResponse[Errors](503)
       .withErrorResponse[Errors](504)
         /**
-   *  Retrieve  details of one account limit
+   * Get title from a schedule DD Facility details, allow filtering by title status and date period
    * 
    * Expected answers:
    *   code 400 : Errors (Bad Request)
@@ -120,12 +123,12 @@ object DefaultApi {
    * @param xSantanderClientId Client ID header
    * @param authorization Authorization security header
    * @param accountId 
-   * @param limitId 
+   * @param scheduleDirectDebitId 
    */
-  def accountIdLimitsLimitIdGet(xSantanderClientId: String, authorization: String, accountId: String, limitId: String): ApiRequest[Unit] =
-    ApiRequest[Unit](ApiMethods.GET, "https://localhost/accounts", "/{account_id}/limits/{limit_id}", "application/json")
+  def accountIdScheduleDirectDebitScheduleDirectDebitIdTitlesGet(xSantanderClientId: String, authorization: String, accountId: String, scheduleDirectDebitId: String): ApiRequest[Unit] =
+    ApiRequest[Unit](ApiMethods.GET, "https://localhost/accounts", "/{account_id}/schedule_direct_debit/{schedule_direct_debit_id} /titles", "application/json")
       .withPathParam("account_id", accountId)
-      .withPathParam("limit_id", limitId)
+      .withPathParam("schedule_direct_debit_id", scheduleDirectDebitId)
       .withHeaderParam("X-Santander-Client-Id", xSantanderClientId)
       .withHeaderParam("Authorization", authorization)
       .withErrorResponse[Errors](400)
@@ -136,7 +139,7 @@ object DefaultApi {
       .withErrorResponse[Errors](503)
       .withErrorResponse[Errors](504)
         /**
-   * Update one limit details
+   * Get detail  title from schedule Direct debit
    * 
    * Expected answers:
    *   code 400 : Errors (Bad Request)
@@ -150,12 +153,14 @@ object DefaultApi {
    * @param xSantanderClientId Client ID header
    * @param authorization Authorization security header
    * @param accountId 
-   * @param limitId 
+   * @param scheduleDirectDebitId 
+   * @param titleId 
    */
-  def accountIdLimitsLimitIdPatch(xSantanderClientId: String, authorization: String, accountId: String, limitId: String): ApiRequest[Unit] =
-    ApiRequest[Unit](ApiMethods.PATCH, "https://localhost/accounts", "/{account_id}/limits/{limit_id}", "application/json")
+  def accountIdScheduleDirectDebitScheduleDirectDebitIdTitlesTitleIdGet(xSantanderClientId: String, authorization: String, accountId: String, scheduleDirectDebitId: String, titleId: String): ApiRequest[Unit] =
+    ApiRequest[Unit](ApiMethods.GET, "https://localhost/accounts", "/{account_id}/schedule_direct_debit/{schedule_direct_debit_id} /titles/{title_id}", "application/json")
       .withPathParam("account_id", accountId)
-      .withPathParam("limit_id", limitId)
+      .withPathParam("schedule_direct_debit_id", scheduleDirectDebitId)
+      .withPathParam("title_id", titleId)
       .withHeaderParam("X-Santander-Client-Id", xSantanderClientId)
       .withHeaderParam("Authorization", authorization)
       .withErrorResponse[Errors](400)
@@ -166,65 +171,7 @@ object DefaultApi {
       .withErrorResponse[Errors](503)
       .withErrorResponse[Errors](504)
         /**
-   * Create limit in one account
-   * 
-   * Expected answers:
-   *   code 400 : Errors (Bad Request)
-   *   code 401 : Error (Unauthorized)
-   *   code 403 : Errors (Forbidden)
-   *   code 404 : Errors (Not Found)
-   *   code 415 : Errors (Unsupported media type)
-   *   code 500 : Errors (Internal Server Error)
-   *   code 503 : Errors (Service Unavailable)
-   *   code 504 : Errors (Gateway Tiemout)
-   * 
-   * @param xSantanderClientId Client ID header
-   * @param authorization Authorization security header
-   * @param accountId 
-   */
-  def accountIdLimitsPost(xSantanderClientId: String, authorization: String, accountId: String): ApiRequest[Unit] =
-    ApiRequest[Unit](ApiMethods.POST, "https://localhost/accounts", "/{account_id}/limits", "application/json")
-      .withPathParam("account_id", accountId)
-      .withHeaderParam("X-Santander-Client-Id", xSantanderClientId)
-      .withHeaderParam("Authorization", authorization)
-      .withErrorResponse[Errors](400)
-      .withErrorResponse[Error](401)
-      .withErrorResponse[Errors](403)
-      .withErrorResponse[Errors](404)
-      .withErrorResponse[Errors](415)
-      .withErrorResponse[Errors](500)
-      .withErrorResponse[Errors](503)
-      .withErrorResponse[Errors](504)
-        /**
-   * Retrieve all prices applicable to an account by period
-   * 
-   * Expected answers:
-   *   code 400 : Errors (Bad Request)
-   *   code 401 : Errors (Unauthorized)
-   *   code 403 : Errors (Forbidden)
-   *   code 404 : Errors (Not Found)
-   *   code 500 : Errors (Internal Server Error)
-   *   code 503 : Errors (Service Unavailable)
-   *   code 504 : Errors (Gateway Tiemout)
-   * 
-   * @param xSantanderClientId Client ID header
-   * @param authorization Authorization security header
-   * @param accountId 
-   */
-  def accountIdPricesGet(xSantanderClientId: String, authorization: String, accountId: String): ApiRequest[Unit] =
-    ApiRequest[Unit](ApiMethods.GET, "https://localhost/accounts", "/{account_id}/prices", "application/json")
-      .withPathParam("account_id", accountId)
-      .withHeaderParam("X-Santander-Client-Id", xSantanderClientId)
-      .withHeaderParam("Authorization", authorization)
-      .withErrorResponse[Errors](400)
-      .withErrorResponse[Errors](401)
-      .withErrorResponse[Errors](403)
-      .withErrorResponse[Errors](404)
-      .withErrorResponse[Errors](500)
-      .withErrorResponse[Errors](503)
-      .withErrorResponse[Errors](504)
-        /**
-   * Account request cancellation
+   * Refuse a  title from schedule Direct debit
    * 
    * Expected answers:
    *   code 400 : Errors (Bad Request)
@@ -239,10 +186,14 @@ object DefaultApi {
    * @param xSantanderClientId Client ID header
    * @param authorization Authorization security header
    * @param accountId 
+   * @param scheduleDirectDebitId 
+   * @param titleId 
    */
-  def accountIdResquestCancellationPost(xSantanderClientId: String, authorization: String, accountId: String): ApiRequest[Unit] =
-    ApiRequest[Unit](ApiMethods.POST, "https://localhost/accounts", "/{account_id}/resquest_cancellation", "application/json")
+  def accountIdScheduleDirectDebitScheduleDirectDebitIdTitlesTitleIdRefuseTittlePost(xSantanderClientId: String, authorization: String, accountId: String, scheduleDirectDebitId: String, titleId: String): ApiRequest[Unit] =
+    ApiRequest[Unit](ApiMethods.POST, "https://localhost/accounts", "/{account_id}/schedule_direct_debit/{schedule_direct_debit_id} /titles/{title_id}/refuse_tittle", "application/json")
       .withPathParam("account_id", accountId)
+      .withPathParam("schedule_direct_debit_id", scheduleDirectDebitId)
+      .withPathParam("title_id", titleId)
       .withHeaderParam("X-Santander-Client-Id", xSantanderClientId)
       .withHeaderParam("Authorization", authorization)
       .withErrorResponse[Errors](400)
@@ -254,7 +205,35 @@ object DefaultApi {
       .withErrorResponse[Errors](503)
       .withErrorResponse[Errors](504)
         /**
-   * Restore account previously cancelled
+   * Get list of schedule DD facilities under an account. Allows filtering per payee and status (accepted  or pendig)
+   * 
+   * Expected answers:
+   *   code 400 : Errors (Bad Request)
+   *   code 401 : Errors (Unauthorized)
+   *   code 403 : Errors (Forbidden)
+   *   code 404 : Errors (Not Found)
+   *   code 500 : Errors (Internal Server Error)
+   *   code 503 : Errors (Service Unavailable)
+   *   code 504 : Errors (Gateway Tiemout)
+   * 
+   * @param xSantanderClientId Client ID header
+   * @param authorization Authorization security header
+   * @param accountId 
+   */
+  def accountIdScheduleDirectDebitsGet(xSantanderClientId: String, authorization: String, accountId: String): ApiRequest[Unit] =
+    ApiRequest[Unit](ApiMethods.GET, "https://localhost/accounts", "/{account_id}/schedule_direct_debits", "application/json")
+      .withPathParam("account_id", accountId)
+      .withHeaderParam("X-Santander-Client-Id", xSantanderClientId)
+      .withHeaderParam("Authorization", authorization)
+      .withErrorResponse[Errors](400)
+      .withErrorResponse[Errors](401)
+      .withErrorResponse[Errors](403)
+      .withErrorResponse[Errors](404)
+      .withErrorResponse[Errors](500)
+      .withErrorResponse[Errors](503)
+      .withErrorResponse[Errors](504)
+        /**
+   * Register a new schedule DD facility from an offer accepted
    * 
    * Expected answers:
    *   code 400 : Errors (Bad Request)
@@ -269,154 +248,12 @@ object DefaultApi {
    * @param xSantanderClientId Client ID header
    * @param authorization Authorization security header
    * @param accountId 
+   * @param scheduleDirectDebitId 
    */
-  def accountIdRestoreAccountPost(xSantanderClientId: String, authorization: String, accountId: String): ApiRequest[Unit] =
-    ApiRequest[Unit](ApiMethods.POST, "https://localhost/accounts", "/{account_id}/restore_account", "application/json")
+  def accountIdScheduleDirectDebitsScheduleDirectDebitIdApproveScheduleDdPost(xSantanderClientId: String, authorization: String, accountId: String, scheduleDirectDebitId: String): ApiRequest[Unit] =
+    ApiRequest[Unit](ApiMethods.POST, "https://localhost/accounts", "/{account_id}/schedule_direct_debits/{schedule_direct_debit_id}/approve_schedule_dd", "application/json")
       .withPathParam("account_id", accountId)
-      .withHeaderParam("X-Santander-Client-Id", xSantanderClientId)
-      .withHeaderParam("Authorization", authorization)
-      .withErrorResponse[Errors](400)
-      .withErrorResponse[Errors](401)
-      .withErrorResponse[Errors](403)
-      .withErrorResponse[Errors](404)
-      .withErrorResponse[Errors](415)
-      .withErrorResponse[Errors](500)
-      .withErrorResponse[Errors](503)
-      .withErrorResponse[Errors](504)
-        /**
-   * Retrieve the activities carried out on an account (transactions, updates, etc.) from the logs of all channels
-   * 
-   * Expected answers:
-   *   code 400 : Errors (Bad Request)
-   *   code 401 : Errors (Unauthorized)
-   *   code 403 : Errors (Forbidden)
-   *   code 404 : Errors (Not Found)
-   *   code 415 : Errors (Unsupported media type)
-   *   code 500 : Errors (Internal Server Error)
-   *   code 503 : Errors (Service Unavailable)
-   *   code 504 : Errors (Gateway Tiemout)
-   * 
-   * @param xSantanderClientId Client ID header
-   * @param authorization Authorization security header
-   * @param accountId 
-   */
-  def accountIdRetreieveLogsActivityPost(xSantanderClientId: String, authorization: String, accountId: String): ApiRequest[Unit] =
-    ApiRequest[Unit](ApiMethods.POST, "https://localhost/accounts", "/{account_id}/retreieve_logs_activity", "application/json")
-      .withPathParam("account_id", accountId)
-      .withHeaderParam("X-Santander-Client-Id", xSantanderClientId)
-      .withHeaderParam("Authorization", authorization)
-      .withErrorResponse[Errors](400)
-      .withErrorResponse[Errors](401)
-      .withErrorResponse[Errors](403)
-      .withErrorResponse[Errors](404)
-      .withErrorResponse[Errors](415)
-      .withErrorResponse[Errors](500)
-      .withErrorResponse[Errors](503)
-      .withErrorResponse[Errors](504)
-        /**
-   * Close account validation
-   * 
-   * Expected answers:
-   *   code 400 : Errors (Bad Request)
-   *   code 401 : Errors (Unauthorized)
-   *   code 403 : Errors (Forbidden)
-   *   code 404 : Errors (Not Found)
-   *   code 415 : Errors (Unsupported media type)
-   *   code 500 : Errors (Internal Server Error)
-   *   code 503 : Errors (Service Unavailable)
-   *   code 504 : Errors (Gateway Tiemout)
-   * 
-   * @param xSantanderClientId Client ID header
-   * @param authorization Authorization security header
-   * @param accountId 
-   */
-  def accountIdSimulateCancellationPost(xSantanderClientId: String, authorization: String, accountId: String): ApiRequest[Unit] =
-    ApiRequest[Unit](ApiMethods.POST, "https://localhost/accounts", "/{account_id}/simulate_cancellation", "application/json")
-      .withPathParam("account_id", accountId)
-      .withHeaderParam("X-Santander-Client-Id", xSantanderClientId)
-      .withHeaderParam("Authorization", authorization)
-      .withErrorResponse[Errors](400)
-      .withErrorResponse[Errors](401)
-      .withErrorResponse[Errors](403)
-      .withErrorResponse[Errors](404)
-      .withErrorResponse[Errors](415)
-      .withErrorResponse[Errors](500)
-      .withErrorResponse[Errors](503)
-      .withErrorResponse[Errors](504)
-        /**
-   * Validate customer�s account status, if the account can be related to a specific product and funds enough
-   * 
-   * Expected answers:
-   *   code 400 : Errors (Bad Request)
-   *   code 401 : Errors (Unauthorized)
-   *   code 403 : Errors (Forbidden)
-   *   code 404 : Errors (Not Found)
-   *   code 415 : Errors (Unsupported media type)
-   *   code 500 : Errors (Internal Server Error)
-   *   code 503 : Errors (Service Unavailable)
-   *   code 504 : Errors (Gateway Tiemout)
-   * 
-   * @param xSantanderClientId Client ID header
-   * @param authorization Authorization security header
-   * @param accountId 
-   */
-  def accountIdValidateInformationPost(xSantanderClientId: String, authorization: String, accountId: String): ApiRequest[Unit] =
-    ApiRequest[Unit](ApiMethods.POST, "https://localhost/accounts", "/{account_id}/validate_information", "application/json")
-      .withPathParam("account_id", accountId)
-      .withHeaderParam("X-Santander-Client-Id", xSantanderClientId)
-      .withHeaderParam("Authorization", authorization)
-      .withErrorResponse[Errors](400)
-      .withErrorResponse[Errors](401)
-      .withErrorResponse[Errors](403)
-      .withErrorResponse[Errors](404)
-      .withErrorResponse[Errors](415)
-      .withErrorResponse[Errors](500)
-      .withErrorResponse[Errors](503)
-      .withErrorResponse[Errors](504)
-        /**
-   * Rretrieve account list
-   * 
-   * Expected answers:
-   *   code 400 : Errors (Bad Request)
-   *   code 401 : Errors (Unauthorized)
-   *   code 403 : Errors (Forbidden)
-   *   code 404 : Errors (Not Found)
-   *   code 500 : Errors (Internal Server Error)
-   *   code 503 : Errors (Service Unavailable)
-   *   code 504 : Errors (Gateway Tiemout)
-   * 
-   * @param xSantanderClientId Client ID header
-   * @param authorization Authorization security header
-   */
-  def rootGet(xSantanderClientId: String, authorization: String): ApiRequest[Unit] =
-    ApiRequest[Unit](ApiMethods.GET, "https://localhost/accounts", "/", "application/json")
-      .withHeaderParam("X-Santander-Client-Id", xSantanderClientId)
-      .withHeaderParam("Authorization", authorization)
-      .withErrorResponse[Errors](400)
-      .withErrorResponse[Errors](401)
-      .withErrorResponse[Errors](403)
-      .withErrorResponse[Errors](404)
-      .withErrorResponse[Errors](500)
-      .withErrorResponse[Errors](503)
-      .withErrorResponse[Errors](504)
-        /**
-   * Create account Capture and record basic data Regulatory compliance (AML, Black List, Fraud, Risk) Iidentifier assignment
-   * 
-   * Expected answers:
-   *   code 400 : Errors (Bad Request)
-   *   code 401 : Errors (Unauthorized)
-   *   code 403 : Errors (Forbidden)
-   *   code 404 : Errors (Not Found)
-   *   code 415 : Errors (Unsupported media type)
-   *   code 500 : Errors (Internal Server Error)
-   *   code 503 : Errors (Service Unavailable)
-   *   code 504 : Errors (Gateway Tiemout)
-   * 
-   * @param xSantanderClientId Client ID header
-   * @param authorization Authorization security header
-   */
-  def rootPost(xSantanderClientId: String, authorization: String): ApiRequest[Unit] =
-    ApiRequest[Unit](ApiMethods.POST, "https://localhost/accounts", "/", "application/json")
+      .withPathParam("schedule_direct_debit_id", scheduleDirectDebitId)
       .withHeaderParam("X-Santander-Client-Id", xSantanderClientId)
       .withHeaderParam("Authorization", authorization)
       .withErrorResponse[Errors](400)
