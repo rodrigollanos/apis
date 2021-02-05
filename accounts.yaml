@@ -1,0 +1,982 @@
+---
+swagger: "2.0"
+info:
+  x-ibm-name: accounts
+  title: Accounts
+  version: 1.0.1
+  x-santander-mode: L
+  description: Allows your customers to know the list of his/her list of current and
+    saving accounts, their balances and transactions in Santander.
+  x-santander-atlas-id: ""
+  x-santander-atlas-description: |-
+    San APIs infrastructure acts as a interconnection Gateway to the Banks of the Group:
+      - Partners or Consumers Partners subscribe SAN APIs from the Gateway
+      - Gateway will use the Berlin Group specification
+schemes:
+- https
+basePath: /
+consumes:
+- application/json
+produces:
+- application/json
+securityDefinitions:
+  Authorization Code:
+    type: oauth2
+    description: ""
+    flow: accessCode
+    scopes:
+      acclist.read: Accounts static scope. Accounts list.
+      accdet.read: Accounts static scope. Account details.
+      acctran.read: Accounts static scope. Account transactions list and account transaction
+        details.
+    authorizationUrl: https://api-sandbox.santander.com/santander/external/oauth/authorize
+    tokenUrl: https://api-sandbox.santander.com/santander/external/oauth/token
+    x-tokenIntrospect:
+      url: $(security-url)
+  X-IBM-Client-Id:
+    type: apiKey
+    in: header
+    name: X-IBM-Client-Id
+    description: Client id header.
+security:
+- X-IBM-Client-Id: []
+x-ibm-configuration:
+  testable: true
+  enforced: true
+  phase: realized
+paths:
+  /me/accounts:
+    get:
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/accountsListResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errors'
+        404:
+          description: Not found
+          schema:
+            $ref: '#/definitions/errors'
+        429:
+          description: Too many requests
+          schema:
+            $ref: '#/definitions/errors'
+        500:
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/errors'
+        503:
+          description: Service unavailable
+          schema:
+            $ref: '#/definitions/errors'
+      summary: Allows merchants to show Accounts list Inquiry of Santander customers.
+        Retrieve current accounts list.
+      description: 'Gets accounts list. In order to perform this operation, it is
+        neccesary to provide a savings or current account number (several formats
+        are allowed). Please note that the API will return the info according to the
+        default language for each Santander local bank, as per the following list:
+        - Santander Spain: es-ES - Santander UK: en-GB - Santander Brazil: pt-BR -
+        Santander Mexico: es-MX - Santander Polonia : pl-PL'
+      parameters:
+      - $ref: '#/parameters/Authorization'
+      - $ref: '#/parameters/X-Santander-Global-Id'
+      - name: _offset
+        type: string
+        required: false
+        in: query
+        description: This field indicates to skip that many rows before beginning
+          to return rows. If this field is omitted, first page will be return.
+      - name: _limit
+        type: string
+        required: false
+        in: query
+        description: This field indicates the maximum rows returned in response, it
+          means, no more than that many rows will be returned (but possibly less,
+          if the query itself yields less rows). It will return 5 rows by default.
+      - name: _expand
+        type: string
+        required: false
+        in: query
+        description: 'If value is "balances", shows the following balance types: available
+          balance, pending balance, withholding balance, overdraft limit and overdraft
+          available. By default it will not show balances.'
+      security:
+      - Authorization Code:
+        - acclist.read
+  /me/accounts/{account_id}:
+    get:
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/accountDetailsResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errors'
+        404:
+          description: Not found
+          schema:
+            $ref: '#/definitions/errors'
+        429:
+          description: Too many requests
+          schema:
+            $ref: '#/definitions/errors'
+        500:
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/errors'
+        503:
+          description: Service unavailable
+          schema:
+            $ref: '#/definitions/errors'
+      summary: Allows merchants to show the Balances Account list Inquiry of Santander
+        customers. Retrieve currents accounts balances.
+      description: 'Gets basic information an account. In order to perform this operation,
+        it is neccesary to provide a savings or current account number (several formats
+        are allowed). Please note that the API will return the info according to the
+        default language for each Santander local bank, as per the following list:
+        - Santander Spain: es-ES - Santander UK: en-GB - Santander Brazil: pt-BR -
+        Santander Mexico: es-MX - Santander Polonia : pl-PL'
+      security:
+      - Authorization Code:
+        - accdet.read
+      parameters:
+      - $ref: '#/parameters/Authorization'
+      - $ref: '#/parameters/X-Santander-Global-Id'
+      - name: account_id
+        type: string
+        required: true
+        in: path
+        description: Account number identification.
+      - name: include_last_transactions
+        type: boolean
+        required: false
+        in: query
+        description: Indicator to get latest transactions. The value by default is
+          false and the latestTransactions object will be empty.  Shows five transactions.
+      - name: _expand
+        type: string
+        required: false
+        in: query
+        description: If value is "cards", shows the related cards of current account.
+          By default it will not show the related cards.
+  /me/accounts/{account_id}/transactions:
+    get:
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/transactionsListResponse'
+        400:
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/errors'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errors'
+        404:
+          description: Not found
+          schema:
+            $ref: '#/definitions/errors'
+        429:
+          description: Too many requests
+          schema:
+            $ref: '#/definitions/errors'
+        500:
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/errors'
+        503:
+          description: Service unavailable
+          schema:
+            $ref: '#/definitions/errors'
+      security:
+      - Authorization Code:
+        - acctran.read
+      summary: Account transaction  list Inquiry, Allows filtering by date period,
+        transaction type and amount.
+      description: It provides the account transaction list sorted by operation date.
+        Allows filtering by operation date, transaction type, currency and amount.
+        The account number should be provided as input, and can be restricted incorporating
+        time period (start and end dates), transaction type, amount and currency.
+        Choosing whether you want to sort descending or ascending by date.
+      parameters:
+      - $ref: '#/parameters/Authorization'
+      - $ref: '#/parameters/X-Santander-Global-Id'
+      - name: account_id
+        type: string
+        required: true
+        in: path
+        description: Account number identification.
+      - name: _offset
+        type: string
+        required: false
+        in: query
+        description: This field indicates to skip that many rows before beginning
+          to return rows. If this field is omitted, first page will be return.
+      - name: _limit
+        type: string
+        required: false
+        in: query
+        description: This field indicates the maximum rows returned in response, it
+          means, no more than that many rows will be returned (but possibly less,
+          if the query itself yields less rows). It will return 20 rows by default.
+      - name: from_date
+        type: string
+        required: false
+        in: query
+        description: 'Start date period to be considered for the retrieve of transaction
+          (YYYY-MM-DDTHH:MM:SS±00:00). If this field and to_date is not poblated will
+          be listed 2 years data. ISO 8601: https://en.wikipedia.org/wiki/ISO_8601'
+      - name: to_date
+        type: string
+        required: false
+        in: query
+        description: 'End date period to be considered for the retrieve of transaction
+          (YYYY-MM-DDTHH:MM:SS±00:00). If this field and from_date is not poblated
+          will be listed 2 years data. ISO 8601: https://en.wikipedia.org/wiki/ISO_8601'
+      - name: from_amount
+        type: number
+        required: false
+        in: query
+        description: Minimum amount of transactions to recover. Allows negative and
+          positive amount
+        format: double
+      - name: to_amount
+        type: number
+        required: false
+        in: query
+        description: Maximun amount of transactions to retrieve. Allows negative and
+          positive amount
+        format: double
+      - name: _sort
+        type: string
+        required: false
+        in: query
+        description: This field allows sorting the results attending to the transaction´s
+          operation date. Allowed +date ascending or -date descending.
+      - name: transaction_type
+        type: string
+        required: false
+        in: query
+        description: 'Represents if the transaction increases (Credit) or decreases
+          (Debit)  the balance of the account. Allowed values: credit, debit or pending.
+          If this field is empty, all results are showed. It can not be compatible
+          with fields from_amount or to_mount'
+  /me/accounts/{account_id}/transactions/{transaction_id}:
+    get:
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/transactionDetailsResponse'
+        401:
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errors'
+        404:
+          description: Not found
+          schema:
+            $ref: '#/definitions/errors'
+        429:
+          description: Too many requests
+          schema:
+            $ref: '#/definitions/errors'
+        500:
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/errors'
+        503:
+          description: Service unavailable
+          schema:
+            $ref: '#/definitions/errors'
+      summary: Retrieve the detail an transaction of account.
+      description: Get detail of account transaction  In order to perform this operation
+        it is neccesary to provide a savings or current account number (several formats
+        are allowed) and  transaction reference identificaction should be provided
+        as input.
+      parameters:
+      - $ref: '#/parameters/Authorization'
+      - $ref: '#/parameters/X-Santander-Global-Id'
+      - name: account_id
+        type: string
+        required: true
+        in: path
+        description: Account number identification.
+      - name: transaction_id
+        type: string
+        required: true
+        in: path
+        description: Internal reference of transaction.
+      security:
+      - Authorization Code:
+        - acctran.read
+definitions:
+  accountsListResponse:
+    properties:
+      accountsDataList:
+        $ref: '#/definitions/accountsDataList'
+        description: Single account detail.
+      _links:
+        $ref: '#/definitions/accountsListLinks'
+        description: Link object for accounts list pagination.
+    additionalProperties: false
+    description: Accounts list response.
+  accountsDataList:
+    type: array
+    items:
+      $ref: '#/definitions/accountsDataDetails'
+    description: List of customer´s accounts
+  accountsDataDetails:
+    properties:
+      displayNumber:
+        type: string
+        example: 00***384
+        description: Number account identification.
+      accountId:
+        properties: []
+        type: string
+        example: abcdefghijklmnopqrstuvwxyz
+        description: Tokenized account number.
+      alias:
+        properties: []
+        type: string
+        example: MY CHEQUING ACCOUNT
+        description: Name asigned  to the account by the client to identify it easily.
+      type:
+        properties: []
+        type: string
+        example: TRADITIONAL_ACCOUNT
+        description: Account type.
+      description:
+        properties: []
+        type: string
+        example: TRADITIONAL ACCOUNT
+        description: Account description.
+      status:
+        properties: []
+        type: string
+        example: ACTIVE
+        description: Current status.
+      mainBalance:
+        $ref: '#/definitions/money'
+        description: Main balance.
+      availableBalance:
+        $ref: '#/definitions/money'
+        description: Available balance
+      pendingBalance:
+        $ref: '#/definitions/money'
+        description: Pending balance
+      withholdingBalance:
+        $ref: '#/definitions/money'
+        description: Withholding balance
+      overdraftLimit:
+        $ref: '#/definitions/money'
+        description: Overdraft limit
+      _links:
+        description: Link object for account and transactions details.
+        $ref: '#/definitions/accountsDataDetailsLinks'
+    additionalProperties: false
+    description: Details of an account.
+    required:
+    - displayNumber
+  accountsDataDetailsLinks:
+    properties:
+      accountDetailsLink:
+        type: string
+        example: /me/accounts/{account_id}
+        description: Link to account details.
+      transactionsListLink:
+        properties: []
+        type: string
+        example: /me/accounts/{account_id}/transactions
+        description: Link to transactions list.
+    additionalProperties: false
+    description: Account and transactions details.
+  accountsListLinks:
+    properties:
+      _first:
+        properties: []
+        type: string
+        description: Link to navigates to the first page according to input parameters.
+        example: /me/accounts?_offset=0
+      _prev:
+        properties: []
+        type: string
+        description: Link to navigates to the previous page according to input parameters.
+        example: /me/accounts?_offset=0
+      _next:
+        properties: []
+        type: string
+        description: Link to navigates to the next page according to input parameters.
+        example: /me/accounts?_offset=1
+      _last:
+        properties: []
+        type: string
+        description: Link to navigates to the last page according to input parameters.
+        example: /me/accounts?_offset=99
+    additionalProperties: false
+    description: Accounts list pagination.
+    required:
+    - _prev
+    - _next
+  money:
+    properties:
+      amount:
+        type: number
+        description: Amount
+        format: double
+        example: 1234.550000
+      currencyCode:
+        properties: []
+        type: string
+        description: Currency codes - ISO 4217. https://en.wikipedia.org/wiki/ISO_4217
+        example: MXN
+    additionalProperties: false
+    description: Object that indicates amount and currency.
+  accountDetailsResponse:
+    properties:
+      displayNumber:
+        type: string
+        example: 00***384
+        description: Number account identification.
+      accountId:
+        properties: []
+        type: string
+        example: abcdefghijklmnopqrstuvwxyz
+        description: Tokenized account number.
+      alias:
+        properties: []
+        type: string
+        example: MY CHEQUING ACCOUNT
+        description: Name asigned  to the account by the client to identify it easily.
+      type:
+        properties: []
+        type: string
+        example: TRADITIONAL_ACCOUNT
+        description: Account type.
+      description:
+        properties: []
+        type: string
+        example: TRADITIONAL ACCOUNT
+        description: Account description.
+      status:
+        properties: []
+        type: string
+        example: ACTIVE
+        description: Current status.
+      relatedCards:
+        $ref: '#/definitions/relatedCards'
+        description: Related cards.
+      mainBalance:
+        $ref: '#/definitions/balance'
+        description: Main balance.
+      availableBalance:
+        $ref: '#/definitions/balance'
+        description: Available balance.
+      pendingBalance:
+        $ref: '#/definitions/balance'
+        description: Pending balance.
+      withholdingBalance:
+        $ref: '#/definitions/balance'
+        description: Withholding balance.
+      overdraftLimit:
+        $ref: '#/definitions/balance'
+        description: Overdraft limit.
+      latestTransactions:
+        description: Latest transactions.
+        $ref: '#/definitions/lastTransaction'
+      transactionsListLink:
+        properties: []
+        type: string
+        example: /me/accounts/{account_id}/transactions
+        description: Link to transactions list.
+    additionalProperties: false
+    description: Account details response.
+  accountDetailsResponseMex/Bra:
+    properties:
+      displayNumber:
+        type: string
+        example: 00***384
+        description: Number account identification.
+      accountId:
+        properties: []
+        type: string
+        example: abcdefghijklmnopqrstuvwxyz
+        description: Tokenized account number.
+      alias:
+        properties: []
+        type: string
+        example: MY CHEQUING ACCOUNT
+        description: Name asigned  to the account by the client to identify it easily.
+      type:
+        properties: []
+        type: string
+        example: TRADITIONAL_ACCOUNT
+        description: Account type.
+      description:
+        properties: []
+        type: string
+        example: TRADITIONAL ACCOUNT
+        description: Account description.
+      status:
+        properties: []
+        type: string
+        example: ACTIVE
+        description: Current status.
+      clabe:
+        properties: []
+        type: string
+        example: 99 0182 1632 0153 5556
+        description: Clabe number.
+      relatedCards:
+        $ref: '#/definitions/relatedCards'
+        description: Related cards.
+      relatedPhone:
+        properties: []
+        type: string
+        example: "04455172634"
+        description: Phone number.
+      mainBalance:
+        $ref: '#/definitions/balance'
+        description: Main balance.
+      availableBalance:
+        $ref: '#/definitions/balance'
+        description: Available balance.
+      pendingBalance:
+        $ref: '#/definitions/balance'
+        description: Pending balance.
+      withholdingBalance:
+        $ref: '#/definitions/balance'
+        description: Withholding balance.
+      overdraftLimit:
+        $ref: '#/definitions/balance'
+        description: Overdraft limit.
+      latestTransactions:
+        description: Latest transactions.
+        $ref: '#/definitions/latestTransactions'
+      transactionsListLink:
+        properties: []
+        type: string
+        example: /me/accounts/{account_id}/transactions
+        description: Link to transactions list.
+    additionalProperties: false
+    description: Account details response for Mexico and Brazil.
+  relatedCards:
+    type: array
+    items:
+      $ref: '#/definitions/relatedCard'
+    description: List of cards details.
+  relatedCard:
+    properties:
+      displayNumber:
+        type: string
+        example: xxxx-xxxx-xxxx-5643
+        description: Number account identification.
+      cardLink:
+        properties: []
+        type: string
+        example: /cards/{account_id}
+        description: Link to card details.
+      type:
+        properties: []
+        type: string
+        example: ADDITIONAL
+        description: Card type.
+    additionalProperties: false
+    description: Card details.
+  balance:
+    properties:
+      amount:
+        type: number
+        format: double
+        example: 1234.560000
+        description: Amount.
+      currencyCode:
+        properties: []
+        type: string
+        description: Currency codes - ISO 4217. https://en.wikipedia.org/wiki/ISO_4217
+        example: MXN
+      lastUpdate:
+        properties: []
+        type: string
+        description: Date last update was made. ISO 8601. https://en.wikipedia.org/wiki/ISO_8601
+        format: date-time
+        example: "2019-03-14T01:43:19-06:00"
+    additionalProperties: false
+    description: Object that represents balances.
+  latestTransactions:
+    type: array
+    items:
+      $ref: '#/definitions/lastTransaction'
+    description: List of the latest transactions.
+  lastTransaction:
+    properties:
+      transactionId:
+        type: string
+        example: "3840"
+        description: Internal transaction reference to identification.
+      creationDate:
+        type: string
+        example: "2019-03-14T01:43:19-06:00"
+        format: date-time
+        description: Date of creation. ISO 8601. https://en.wikipedia.org/wiki/ISO_8601
+      processedDate:
+        properties: []
+        type: string
+        format: date-time
+        example: "2019-03-14T01:43:19-06:00"
+        description: Date of processing. ISO 8601. https://en.wikipedia.org/wiki/ISO_8601
+      description:
+        properties: []
+        type: string
+        example: payment
+        description: Account description.
+      transactionType:
+        properties: []
+        type: string
+        example: DEBIT
+        description: Transaction type.
+      transactionCategory:
+        properties: []
+        type: string
+        description: Type of category for a transaction
+        example: withdraw money
+      amount:
+        $ref: '#/definitions/money'
+        description: Amount and currency of transaction.
+      transactionDetailsLink:
+        properties: []
+        type: string
+        example: /me/accounts/{account_id}/transactions/{transaction_id}
+        description: Link to transaction details.
+    additionalProperties: false
+    description: Info of transaction.
+    required:
+    - transactionId
+  lastTransactionMex/Bra:
+    properties:
+      transactionId:
+        type: string
+        example: "3840"
+        description: Internal transaction reference to identification.
+      creationDate:
+        type: string
+        example: "2019-03-14T01:43:19-06:00"
+        format: date-time
+        description: Date of creation. ISO 8601. https://en.wikipedia.org/wiki/ISO_8601
+      processedDate:
+        properties: []
+        type: string
+        format: date-time
+        example: "2019-03-14T01:43:19-06:00"
+        description: Date of processing. ISO 8601. https://en.wikipedia.org/wiki/ISO_8601
+      description:
+        properties: []
+        type: string
+        example: payment
+        description: Account description.
+      transactionType:
+        properties: []
+        type: string
+        example: DEBIT
+        description: Transaction type.
+      transactionCategory:
+        properties: []
+        type: string
+        description: Type of category for a transaction
+        example: withdraw money
+      amount:
+        $ref: '#/definitions/money'
+        description: Amount and currency of transaction.
+      runningBalance:
+        $ref: '#/definitions/money'
+        description: Running balance.
+      transactionDetailsLink:
+        properties: []
+        type: string
+        example: /me/accounts/{account_id}/transactions/{transaction_id}
+        description: Link to transaction details.
+    additionalProperties: false
+    required:
+    - transactionId
+    description: Info of transaction for Mexico and Brazil.
+  transactionsListResponse:
+    properties:
+      displayNumber:
+        type: string
+        example: 00***384
+        description: Number account identification.
+      accountId:
+        properties: []
+        type: string
+        example: abcdefghijklmnopqrstuvwxyz
+        description: Tokenized account number.
+      alias:
+        properties: []
+        type: string
+        description: Name asigned  to the account by the client to identify it easily.
+        example: MY CHEQUING ACCOUNT
+      transactionsDataList:
+        $ref: '#/definitions/transactionsDataList'
+        description: List of transactions.
+      _links:
+        $ref: '#/definitions/transactionsListLinks'
+        description: Transactions list links.
+    additionalProperties: false
+    description: Transactions list response.
+  transactionsDataList:
+    type: array
+    items:
+      $ref: '#/definitions/transactionsDataListItem'
+    description: List of transactions.
+  transactionsDataListItem:
+    type: object
+    description: Transactions details.
+    properties:
+      transactionDetails:
+        $ref: '#/definitions/transactionDetails'
+        description: Transaction data details.
+      transactionDetailsLink:
+        properties: []
+        type: string
+        description: Link to transaction details.
+        example: /me/accounts/{account_id}/transactions/{transaction_id}
+  transactionsListLinks:
+    properties:
+      accountDetailsLink:
+        type: string
+        description: Link to account details.
+        example: /me/accounts/{account_id}
+      _first:
+        properties: []
+        type: string
+        example: /me/accounts/{account_id}/transactions
+        description: Link to navigates to the first page according to input parameters.
+      _prev:
+        properties: []
+        type: string
+        example: /me/accounts/{account_id}/transactions?offset=1
+        description: Link to navigates to the previous page according to input parameters.
+      _next:
+        properties: []
+        type: string
+        example: /me/accounts/{account_id}/transactions?offset=3
+        description: Link to navigates to the next page according to input parameters.
+      _last:
+        properties: []
+        type: string
+        description: Link to navigates to the last page according to input parameters.
+        example: /me/accounts/{account_id}/transactions?offset=99
+    additionalProperties: false
+    description: Links to account details and transactions list pagination.
+  transactionDetailsResponse:
+    properties:
+      displayNumber:
+        properties: []
+        type: string
+        description: Number account identification.
+        example: 00***384
+      accountId:
+        type: string
+        description: Tokenized account number.
+        example: abcdefghijklmnopqrstuvwxyz
+      alias:
+        properties: []
+        type: string
+        example: MY CHEQUING ACCOUNT
+        description: Name asigned  to the account by the client to identify it easily.
+      transactionDetails:
+        $ref: '#/definitions/transactionDetails'
+        description: Details of transaction.
+      accountDetailsLink:
+        properties: []
+        type: string
+        description: Link to account details.
+        example: /me/accounts/{account_id}
+    additionalProperties: false
+    description: Transaction details response.
+  transactionDetails:
+    properties:
+      transactionId:
+        properties: []
+        type: string
+        description: Internal reference of transaction.
+        example: "3840"
+      creationDate:
+        properties: []
+        type: string
+        format: date-time
+        example: "2019-03-15T09:00:00-06:00"
+        description: Date of creation. ISO 8601. https://en.wikipedia.org/wiki/ISO_8601
+      processedDate:
+        properties: []
+        type: string
+        example: "2019-03-15T09:00:00-06:00"
+        format: date-time
+        description: Date of processing. ISO 8601. https://en.wikipedia.org/wiki/ISO_8601
+      description:
+        properties: []
+        type: string
+        example: payment
+        description: Transaction description.
+      transactionType:
+        properties: []
+        example: DEBIT
+        type: string
+        description: 'Transaction type. Allowed values: credit, debit or pending'
+      transactionCategory:
+        properties: []
+        type: string
+        description: Type of category for a transaction
+        example: withdraw money
+      amount:
+        $ref: '#/definitions/money'
+        description: Amout and currency of transaction.
+      balanceResult:
+        description: Balance after transaction.
+        $ref: '#/definitions/money'
+      reference:
+        properties: []
+        type: string
+        example: "6534"
+        description: Number identifier of the movement provided by the customer.
+    additionalProperties: false
+    description: Transaction details response.
+    required:
+    - transactionId
+  transactionDetailsMex/Bra:
+    properties:
+      transactionId:
+        properties: []
+        type: string
+        description: Internal reference of transaction.
+        example: "3840"
+      creationDate:
+        properties: []
+        type: string
+        format: date-time
+        example: "2019-03-15T09:00:00-06:00"
+        description: Date of creation. ISO 8601. https://en.wikipedia.org/wiki/ISO_8601
+      processedDate:
+        properties: []
+        type: string
+        example: "2019-03-15T09:00:00-06:00"
+        format: date-time
+        description: Date of processing. ISO 8601. https://en.wikipedia.org/wiki/ISO_8601
+      description:
+        properties: []
+        type: string
+        example: payment
+        description: Transaction description.
+      transactionType:
+        properties: []
+        example: DEBIT
+        type: string
+        description: 'Transaction type. Allowed values: credit, debit or pending'
+      transactionCategory:
+        properties: []
+        type: string
+        description: Type of category for a transaction
+        example: withdraw money
+      amount:
+        $ref: '#/definitions/money'
+        description: Amout and currency of transaction.
+      balanceResult:
+        description: Balance after transaction.
+        $ref: '#/definitions/money'
+      runningBalance:
+        $ref: '#/definitions/money'
+        description: Running balance.
+      trackingNumber:
+        properties: []
+        type: string
+        example: "7834435"
+        description: Number identifier of the movement provided by the bank.
+      displayCardNumber:
+        properties: []
+        type: string
+        example: '**** **** **** 0078'
+        description: Related card number to the account.
+      transactionOrigin:
+        properties: []
+        type: string
+        example: sucursal 421
+        description: Identifies the place where transaction was created.
+      reference:
+        properties: []
+        type: string
+        example: "6534"
+        description: Number identifier of the movement provided by the customer.
+    additionalProperties: false
+    required:
+    - transactionId
+    description: Transaction details response for Mexico and Brazil.
+  errors:
+    properties:
+      errors:
+        $ref: '#/definitions/errorsList'
+        description: List of errors.
+    additionalProperties: false
+    description: Error response.
+  errorsList:
+    type: array
+    items:
+      $ref: '#/definitions/error'
+    description: List of errors.
+  error:
+    properties:
+      code:
+        type: string
+        description: Unique alphanumeric human readable error code.
+        example: XXX
+      message:
+        properties: []
+        type: string
+        description: Brief summary of issue reported.
+        example: Message
+      level:
+        properties: []
+        type: string
+        description: 'Different issue level: info, warning, error.'
+        example: Error
+      description:
+        properties: []
+        type: string
+        description: Detailed description of the issue reported.
+        example: Description
+    additionalProperties: false
+    description: Object that contains error information.
+tags: []
+parameters:
+  Authorization:
+    name: Authorization
+    type: string
+    required: true
+    in: header
+    description: Authorization Security Header
+  X-Santander-Global-Id:
+    name: X-Santander-Global-Id
+    type: string
+    required: false
+    in: header
+    description: Traceability E2E Header
+x-ibm-endpoints:
+- endpointUrl: https://api-sandbox.santander.com/santander/external
+  description: Sandbox endpoint
+  type:
+  - production
+...
